@@ -1,0 +1,229 @@
+.dashboard {
+    padding: 2rem;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.dashboard h1 {
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.view-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.view-button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #e0e0e0;
+    color: #666;
+}
+
+.view-button.active {
+    background-color: #3498db;
+    color: white;
+}
+
+.view-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.food-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.food-item {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.food-item:hover {
+    transform: translateY(-5px);
+}
+
+.food-item h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+}
+
+.food-item p {
+    color: #666;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.food-item p.status {
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.food-item p.status.available {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.food-item p.status.pending {
+    background-color: #fff3e0;
+    color: #f57c00;
+}
+
+.food-item p.status.claimed {
+    background-color: #e8f5e9;
+    color: #388e3c;
+}
+
+.request-button,
+.cancel-button {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.request-button {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.request-button:hover {
+    background-color: #27ae60;
+}
+
+.cancel-button {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: #c0392b;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.error {
+    color: #e74c3c;
+    text-align: center;
+    padding: 1rem;
+    background-color: #fde8e8;
+    border-radius: 5px;
+    margin: 1rem 0;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.approve-button,
+.reject-button {
+    flex: 1;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.approve-button {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.approve-button:hover {
+    background-color: #27ae60;
+}
+
+.reject-button {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.reject-button:hover {
+    background-color: #c0392b;
+}
+
+.delivery-status {
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+    display: inline-block;
+    margin-top: 1rem;
+}
+
+.delivery-status.pending {
+    background-color: #fff3e0;
+    color: #f57c00;
+}
+
+.delivery-status.delivered {
+    background-color: #e8f5e9;
+    color: #388e3c;
+}
+
+.deliver-button {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    background-color: #3498db;
+    color: white;
+}
+
+.deliver-button:hover {
+    background-color: #2980b9;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .dashboard {
+        padding: 1rem;
+    }
+
+    .food-items {
+        grid-template-columns: 1fr;
+    }
+
+    .view-buttons {
+        flex-direction: column;
+    }
+} 
