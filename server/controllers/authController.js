@@ -1,13 +1,10 @@
-import User from '../models/user.js';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
+const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 
-dotenv.config();
-
-export const signUp = async (req, res) => {
+// Sign up
+exports.signup = async (req, res) => {
     try {
-        const { name, email, password, number, role,address } = req.body;
+        const { name, email, password, address, number, role } = req.body;
 
         // Check if user already exists
         const existingUser = await User.findOne({ email });
@@ -15,26 +12,23 @@ export const signUp = async (req, res) => {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        // Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
         // Create new user
         const user = new User({
             name,
             email,
-            password: hashedPassword,
+            password,
+            address,
             number,
-            role: role || 'volunteer',
-            address: address || ''   // Default to volunteer if role not specified
+            role
         });
 
         await user.save();
 
-        // Generate JWT token
+        // Generate token
         const token = jwt.sign(
-            { id: user._id, role: user.role }, 
+            { userId: user._id, role: user.role },
             process.env.JWT_SECRET,
-            { expiresIn: '1d' }
+            { expiresIn: '24h' }
         );
 
         res.status(201).json({
@@ -43,31 +37,39 @@ export const signUp = async (req, res) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                address: user.address,
+                number: user.number
             }
         });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server Error' });
+        res.status(500).json({ message: error.message });
     }
 };
 
-export const signIn = async (req, res) => {
+// Sign in
+exports.signin = async (req, res) => {
     try {
         const { email, password } = req.body;
 
         console.log(email, password);
         // Find user
-        const user = await User.findOne({ email : email });
+        const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
-        
-        // Generate JWT token
+
+        // Check password
+        const isMatch = await user.comparePassword(password);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
+
+        // Generate token
         const token = jwt.sign(
-            { id: user._id, role: user.role },
+            { userId: user._id, role: user.role },
             process.env.JWT_SECRET,
-            { expiresIn: '1d' }
+            { expiresIn: '24h' }
         );
 
         res.json({
@@ -76,13 +78,12 @@ export const signIn = async (req, res) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                address: user.address,
+                number: user.number
             }
         });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server Error' });
+        res.status(500).json({ message: error.message });
     }
-};
-
-
+}; 

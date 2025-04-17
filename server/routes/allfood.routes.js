@@ -19,7 +19,7 @@ router.get("/", adminAuth, async (req, res) => {
 router.get("/available", auth, async (req, res) => {
     try {
         // const foods = await Food.find({ claimed: false }).populate('user', 'name email');
-        const foods = await Food.find({ });
+        const foods = await Food.find({ }).populate('user').exec();
         res.json(foods);
     } catch (error) {
         console.error(error);

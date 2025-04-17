@@ -1,44 +1,63 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Auth.css';
 
 const SignUp = () => {
-    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         password: '',
+        address: '',
         number: '',
         role: 'volunteer'
     });
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
+        setLoading(true);
+
         try {
-            const response = await axios.post('http://localhost:3000/signup', formData);
+            const response = await axios.post('http://localhost:3000/auth/signup', formData);
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('user', JSON.stringify(response.data.user));
             
             // Redirect based on role
-            if (formData.role === 'admin') {
-                navigate('/admin-dashboard');
-            } else {
-                navigate('/volunteer-dashboard');
+            switch (response.data.user.role) {
+                case 'admin':
+                    navigate('/admin-dashboard');
+                    break;
+                case 'volunteer':
+                    navigate('/volunteer-dashboard');
+                    break;
+                case 'donor':
+                    navigate('/donor-dashboard');
+                    break;
+                default:
+                    navigate('/');
             }
         } catch (error) {
-            setError('Email already exists or invalid data');
+            setError(error.response?.data?.message || 'Failed to sign up');
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="auth-container">
-            <div className="auth-form">
+            <div className="auth-box">
                 <h2>Sign Up</h2>
                 {error && <div className="error-message">{error}</div>}
                 <form onSubmit={handleSubmit}>
@@ -50,7 +69,6 @@ const SignUp = () => {
                             value={formData.name}
                             onChange={handleChange}
                             required
-                            placeholder="Enter your name"
                         />
                     </div>
                     <div className="form-group">
@@ -61,7 +79,6 @@ const SignUp = () => {
                             value={formData.email}
                             onChange={handleChange}
                             required
-                            placeholder="Enter your email"
                         />
                     </div>
                     <div className="form-group">
@@ -72,18 +89,26 @@ const SignUp = () => {
                             value={formData.password}
                             onChange={handleChange}
                             required
-                            placeholder="Create a password"
                         />
                     </div>
                     <div className="form-group">
-                        <label>Phone Number</label>
+                        <label>Address</label>
+                        <input
+                            type="text"
+                            name="address"
+                            value={formData.address}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Number</label>
                         <input
                             type="text"
                             name="number"
                             value={formData.number}
                             onChange={handleChange}
                             required
-                            placeholder="Enter your phone number"
                         />
                     </div>
                     <div className="form-group">
@@ -95,15 +120,16 @@ const SignUp = () => {
                             required
                         >
                             <option value="volunteer">Volunteer</option>
+                            <option value="donor">Donor</option>
                             <option value="admin">Admin</option>
                         </select>
                     </div>
-                    <button type="submit" className="auth-button">
-                        Sign Up
+                    <button type="submit" disabled={loading}>
+                        {loading ? 'Signing Up...' : 'Sign Up'}
                     </button>
                 </form>
                 <p className="auth-link">
-                    Already have an account? <a href="/login">Sign In</a>
+                    Already have an account? <Link to="/signin">Sign In</Link>
                 </p>
             </div>
         </div>

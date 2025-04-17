@@ -15,10 +15,23 @@ const Navbar = ({ token }) => {
   };
 
   const handleDashboardClick = () => {
-    if (user?.role === 'admin') {
-      navigate('/admin-dashboard');
-    } else {
-      navigate('/volunteer-dashboard');
+    if (!user) {
+      navigate('/signin');
+      return;
+    }
+
+    switch (user.role) {
+      case 'admin':
+        navigate('/admin-dashboard');
+        break;
+      case 'volunteer':
+        navigate('/volunteer-dashboard');
+        break;
+      case 'donor':
+        navigate('/donor-dashboard');
+        break;
+      default:
+        navigate('/');
     }
   };
 

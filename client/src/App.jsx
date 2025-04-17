@@ -7,18 +7,20 @@ import SignUp from "./components/auth/SignUp";
 import Navbar from "./components/Navbar/Navbar";
 import AdminDashboard from "./components/dashboard/AdminDashboard";
 import VolunteerDashboard from "./components/dashboard/VolunteerDashboard";
+import DonorDashboard from './components/dashboard/DonorDashboard.jsx';
+import './App.css';
 
 // Protected Route component
-const ProtectedRoute = ({ children, role }) => {
-    const user = JSON.parse(localStorage.getItem('user'));
+const ProtectedRoute = ({ children, allowedRoles }) => {
     const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user'));
 
-    if (!token) {
-        return <Navigate to="/signin" />;
+    if (!token || !user) {
+        return <Navigate to="/signin" replace />;
     }
 
-    if (role && user?.role !== role) {
-        return <Navigate to="/signin" />;
+    if (allowedRoles && !allowedRoles.includes(user.role)) {
+        return <Navigate to="/" replace />;
     }
 
     return children;
@@ -29,7 +31,7 @@ function App() {
     const { pathname } = window.location;
 
     return (
-        <>
+        <div className="app">
             {!pathname.includes("/signin") &&
                 !pathname.includes("/signup") &&
                 !pathname.includes("/dashboard") && <Navbar token={token} />}
@@ -45,7 +47,7 @@ function App() {
                 <Route
                     path="/admin-dashboard"
                     element={
-                        <ProtectedRoute role="admin">
+                        <ProtectedRoute allowedRoles={['admin']}>
                             <AdminDashboard />
                         </ProtectedRoute>
                     }
@@ -54,16 +56,25 @@ function App() {
                 <Route
                     path="/volunteer-dashboard"
                     element={
-                        <ProtectedRoute role="volunteer">
+                        <ProtectedRoute allowedRoles={['volunteer']}>
                             <VolunteerDashboard />
                         </ProtectedRoute>
                     }
                 />
 
+                <Route
+                    path="/donor-dashboard"
+                    element={
+                        <ProtectedRoute allowedRoles={['donor']}>
+                            <DonorDashboard />
+                        </ProtectedRoute>
+                    }
+                />
+
                 {/* Redirect any unknown routes to home */}
-                <Route path="*" element={<Navigate to="/" />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
-        </>
+        </div>
     );
 }
 

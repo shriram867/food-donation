@@ -33,6 +33,7 @@ const VolunteerDashboard = () => {
             const response = await axios.get(endpoint, {
                 headers: { Authorization: `Bearer ${token}` }
             });
+            console.log(response.data);
             setFoodItems(response.data);
             setError('');
         } catch (error) {
@@ -113,7 +114,7 @@ const VolunteerDashboard = () => {
                         <p>Quantity: {item.quantity}</p>
                         <p>Location: {item.address}</p>
                         <p>Expiry: {new Date(item.expiryDate).toLocaleDateString()}</p>
-                        <p>Donated by: {item.user?.name}</p>
+                        <p>Donated by: {item.user.name}</p>
                         <p className={`status ${item.status}`}>{item.status}</p>
                         
                         {view === 'available' && item.status === 'available' && (
